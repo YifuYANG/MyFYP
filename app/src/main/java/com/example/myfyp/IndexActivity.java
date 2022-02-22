@@ -14,28 +14,27 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myfyp.entity.UploadedData;
 import com.example.myfyp.dbhelper.DBHelper;
 import com.example.myfyp.vo.Databank;
 import com.example.myfyp.vo.InputForm;
 import com.example.myfyp.vo.License;
-import com.example.myfyp.vo.Loginform;
+import com.example.myfyp.vo.LoginformToAccessUploadDistanceServer;
 import com.google.firebase.auth.FirebaseAuth;
 
-import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Map;
 
-public class Index extends AppCompatActivity {
+public class IndexActivity extends AppCompatActivity {
 
     private Button id;
+    private Button acquireinfo;
     private DBHelper dbHelper;
     private FirebaseAuth mAuth;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +49,19 @@ public class Index extends AppCompatActivity {
                 //overtake();
                 uploaddata(10,106.52,220.3,102.3,24.1);
 
+            }
+        });
+
+        acquireinfo=(Button) findViewById(R.id.acquireinfo);
+        acquireinfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), LoginToTrafficInfoApiActivity.class);
+                startActivity(intent);
+
+//                Bundle bundle = getIntent().getExtras();
+//                String token = bundle.getString("token");
+//                System.out.println(token);
             }
         });
     }
@@ -131,7 +143,7 @@ public class Index extends AppCompatActivity {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         License license=dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
-        return restTemplate.postForObject("http://10.0.2.2:8081/authentication/pass",new Loginform(license.getDeviceId(),license.getPassword()),Map.class);
+        return restTemplate.postForObject("http://10.0.2.2:8081/authentication/pass",new LoginformToAccessUploadDistanceServer(license.getDeviceId(),license.getPassword()),Map.class);
     }
 
     private Boolean ifuploadsucess(Map<String,String> token,UploadedData uploadedData){

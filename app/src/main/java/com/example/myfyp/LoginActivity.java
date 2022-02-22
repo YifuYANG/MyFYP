@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void onCancelled(@NonNull DatabaseError error) {
                         }
                     });
-                    Intent intent = new Intent(getApplicationContext(),Index.class);
+                    Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
                     startActivity(intent);
                     //CheckTrustDevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
                 } else {
@@ -130,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                     mAuth.getInstance().signOut();
                 } else {
                     System.out.println("this is a trusted device");
-                    Intent intent = new Intent(getApplicationContext(),Index.class);
+                    Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
                     startActivity(intent);
                 }
             }

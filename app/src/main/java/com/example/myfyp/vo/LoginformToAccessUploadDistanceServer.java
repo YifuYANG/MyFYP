@@ -1,10 +1,10 @@
 package com.example.myfyp.vo;
 
 
-public class Loginform {
+public class LoginformToAccessUploadDistanceServer {
     private String deviceid;
     private String password;
-    public Loginform(String deviceid, String password) {
+    public LoginformToAccessUploadDistanceServer(String deviceid, String password) {
         this.deviceid = deviceid;
         this.password = password;
     }

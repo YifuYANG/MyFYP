@@ -16,16 +16,19 @@
         android:theme="@style/Theme.MyFYP"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".LoginToTrafficInfoApiActivity"
+            android:exported="false"/>
+
+
         <activity
             android:name=".RegisterActivity"
             android:exported="false"/>
-
 
         <activity
             android:name=".LoginActivity"
             android:exported="false"/>
         <activity
-            android:name=".Index"
+            android:name=".IndexActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
