@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -50,12 +51,6 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
                     restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                     String token= restTemplate.postForObject("http://10.0.2.2:8083/login",new LoginformToAccessTrafficInfoServer(user,pass),Map.class).get("token").toString();
                     accessTraffic(token);
-                    Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("token", token);
-//                    intent.putExtras(bundle);
-                    startActivity(intent);
-
                 } catch (Exception e){
                     System.out.println(e);
                 }
@@ -64,21 +59,31 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
     }
 
     private void accessTraffic(String token){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    RestTemplate restTemplate = new RestTemplate();
-                    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                    HttpHeaders header = new HttpHeaders();
-                    header.set("token", token);
-                    HttpEntity<UploadedData> request=new HttpEntity<>(null,header);
-                    Boolean ifaccess=restTemplate.postForObject("http://10.0.2.2:8083/traffic",request,Boolean.class);
-                    System.out.println(ifaccess);
-                } catch (Exception e){
-                    System.out.println(e);
+        if(token!=null){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        RestTemplate restTemplate = new RestTemplate();
+                        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                        HttpHeaders header = new HttpHeaders();
+                        header.set("token", token);
+                        HttpEntity<UploadedData> request=new HttpEntity<>(null,header);
+                        Boolean ifaccess=restTemplate.postForObject("http://10.0.2.2:8083/traffic",request,Boolean.class);
+                        if(ifaccess){
+                            Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
+                            startActivity(intent);
+                            Toast.makeText(LoginToTrafficInfoApiActivity.this,"Traffic info received",Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(LoginToTrafficInfoApiActivity.this,"Unable to access database",Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e){
+                        System.out.println(e);
+                    }
                 }
-            }
-        }).start();
+            }).start();
+        } else {
+            System.out.println("un login user");
+        }
     }
 }

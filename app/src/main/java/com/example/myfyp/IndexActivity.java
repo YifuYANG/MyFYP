@@ -58,10 +58,6 @@ public class IndexActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), LoginToTrafficInfoApiActivity.class);
                 startActivity(intent);
-
-//                Bundle bundle = getIntent().getExtras();
-//                String token = bundle.getString("token");
-//                System.out.println(token);
             }
         });
     }
