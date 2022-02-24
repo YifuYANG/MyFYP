@@ -46,7 +46,6 @@ public class IndexActivity extends AppCompatActivity {
             public void onClick(View view) {
                 overtake();
                 //uploaddata(10,106.52,220.3,102.3,24.1);
-
             }
         });
 
@@ -72,7 +71,6 @@ public class IndexActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 if(isfirsttime){
                     uploaddata(location.getSpeed(), 0, 0, 0, 0);
-
                 }
                 isfirsttime=false;
             }
@@ -106,7 +104,6 @@ public class IndexActivity extends AppCompatActivity {
                             System.out.println("unable to authenticate user");
                         }
                     } else {
-                        System.out.println("??/");
                         if(mAuth.getCurrentUser()==null){
                             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
                             startActivity(intent);

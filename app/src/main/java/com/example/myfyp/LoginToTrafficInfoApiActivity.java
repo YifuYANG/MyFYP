@@ -50,7 +50,7 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
                     RestTemplate restTemplate = new RestTemplate();
                     restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                     String token= restTemplate.postForObject("http://10.0.2.2:8083/login",new LoginformToAccessTrafficInfoServer(user,pass),Map.class).get("token").toString();
-                    accessTraffic(token);
+                    accessTraffic("login successfully following token established from server ->"+token);
                 } catch (Exception e){
                     System.out.println(e);
                 }
