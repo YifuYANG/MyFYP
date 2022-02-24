@@ -32,16 +32,11 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     EditText username,password;
     Button login,register;
-    private LocationRequest locationRequest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(4000);
-        locationRequest.setFastestInterval(2000);
         username=(EditText)findViewById(R.id.username);
         password=(EditText) findViewById(R.id.password);
         login=(Button) findViewById(R.id.login);
@@ -112,31 +107,4 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void AddTrustDevice(){
-        DatabaseReference reference = FirebaseDatabase.getInstance("https://yifuyangfyp-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        String deviceId= Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
-        trustId.add(deviceId);
-        reference.child("trustDeviceId").setValue(trustId);
-        System.out.println("new trust dvice added"+" -> "+deviceId);
-    }
-
-    private void CheckTrustDevice(String device){
-        DatabaseReference reference = FirebaseDatabase.getInstance("https://yifuyangfyp-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        reference.addListenerForSingleValueEvent (new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot datasnapshot) {
-                trustId=(ArrayList<String>) datasnapshot.child("trustDeviceId").getValue();
-                if(!trustId.contains(device)){
-                    mAuth.getInstance().signOut();
-                } else {
-                    System.out.println("this is a trusted device");
-                    Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
-                    startActivity(intent);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-    }
 }

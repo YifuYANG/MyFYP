@@ -31,8 +31,6 @@ import java.util.Map;
 
 public class IndexActivity extends AppCompatActivity {
 
-    private Button id;
-    private Button acquireinfo;
     private DBHelper dbHelper;
     private FirebaseAuth mAuth;
     @Override
@@ -40,19 +38,19 @@ public class IndexActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
         mAuth=FirebaseAuth.getInstance();
-        mAuth.signOut();
+        //mAuth.signOut();
         dbHelper = new DBHelper(this);
-        id = (Button) findViewById(R.id.idofdevice);
+        Button id = (Button) findViewById(R.id.idofdevice);
         id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //overtake();
-                uploaddata(10,106.52,220.3,102.3,24.1);
+                overtake();
+                //uploaddata(10,106.52,220.3,102.3,24.1);
 
             }
         });
 
-        acquireinfo=(Button) findViewById(R.id.acquireinfo);
+        Button acquireinfo = (Button) findViewById(R.id.acquireinfo);
         acquireinfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,10 +71,8 @@ public class IndexActivity extends AppCompatActivity {
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 if(isfirsttime){
-                    System.out.println(location.getSpeed());
-                    if(mAuth.getCurrentUser()==null){
-                        uploaddata(location.getSpeed(), 0, 0, 0, 0);
-                    }
+                    uploaddata(location.getSpeed(), 0, 0, 0, 0);
+
                 }
                 isfirsttime=false;
             }
@@ -110,7 +106,7 @@ public class IndexActivity extends AppCompatActivity {
                             System.out.println("unable to authenticate user");
                         }
                     } else {
-                        System.out.println(mAuth.getCurrentUser());
+                        System.out.println("??/");
                         if(mAuth.getCurrentUser()==null){
                             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
                             startActivity(intent);

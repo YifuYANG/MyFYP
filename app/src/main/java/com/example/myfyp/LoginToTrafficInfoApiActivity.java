@@ -71,11 +71,11 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
                         HttpEntity<UploadedData> request=new HttpEntity<>(null,header);
                         Boolean ifaccess=restTemplate.postForObject("http://10.0.2.2:8083/traffic",request,Boolean.class);
                         if(ifaccess){
+                            toast("Traffic info received");
                             Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
                             startActivity(intent);
-                            Toast.makeText(LoginToTrafficInfoApiActivity.this,"Traffic info received",Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(LoginToTrafficInfoApiActivity.this,"Unable to access database",Toast.LENGTH_LONG).show();
+                            toast("Unable to access database");
                         }
                     } catch (Exception e){
                         System.out.println(e);
@@ -85,5 +85,13 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
         } else {
             System.out.println("un login user");
         }
+    }
+
+    private void toast(String input){
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(LoginToTrafficInfoApiActivity.this,input,Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
