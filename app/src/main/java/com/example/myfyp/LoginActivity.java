@@ -41,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private ArrayList<String> trustId;
     EditText username,password;
     Button login,register;
+    private String value;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +65,10 @@ public class LoginActivity extends AppCompatActivity {
                 Login();
             }
         });
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+           value = extras.getString("key");
+        }
     }
 
     private void Login(){
@@ -73,10 +78,6 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this,"Email is required",Toast.LENGTH_LONG).show();
             return;
         }
-//        if(!Patterns.EMAIL_ADDRESS.matcher(Email).matches()){
-//            Toast.makeText(LoginActivity.this,"Email is not valid",Toast.LENGTH_LONG).show();
-//            return;
-//        }
         if(pass.isEmpty()){
             Toast.makeText(LoginActivity.this,"Password os required",Toast.LENGTH_LONG).show();
             return;
@@ -92,27 +93,40 @@ public class LoginActivity extends AppCompatActivity {
                     RestTemplate restTemplate = new RestTemplate();
                     restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                     String token= restTemplate.postForObject("http://10.0.2.2:8081//authentication/pass",new LoginformToAccessUploadDistanceServer(Email,pass), Map.class).get("token").toString();
-                    HttpHeaders header = new HttpHeaders();
-                    header.set("token", token);
-                    HttpEntity<UploadedData> entity_2=new HttpEntity<>(null,header);
-                    String driverlisence =restTemplate.postForObject("http://10.0.2.2:8081/license",entity_2,Map.class).get("license").toString();
-                    System.out.println(dbHelper.getsize());
-                    if(dbHelper.getsize()==0){
-                        dbHelper.insertUserInfo(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
-                    } else {
-                        if(dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID))!=null){
-                            dbHelper.update(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
-                        } else {
+                    if(token!=null){
+                        HttpHeaders header = new HttpHeaders();
+                        header.set("token", token);
+                        HttpEntity<UploadedData> entity_2=new HttpEntity<>(null,header);
+                        String driverlisence =restTemplate.postForObject("http://10.0.2.2:8081/license",entity_2,Map.class).get("license").toString();
+                        if(dbHelper.getsize()==0){
                             dbHelper.insertUserInfo(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
+                        } else {
+                            if(dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID))!=null){
+                                dbHelper.update(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
+                            } else {
+                                dbHelper.insertUserInfo(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
+                            }
                         }
+                        Intent intent = new Intent(getApplicationContext(),IndexActivity.class);
+                        if(value!=null&&value.equals("needlogintoauthedtouploaddata")){
+                            intent.putExtra("key", "loginpassed");
+                            value=null;
+                        }
+                        startActivity(intent);
+                    } else {
+                        toast("unable to login");
                     }
-                    Intent intent = new Intent(getApplicationContext(),IndexActivity.class);
-                    startActivity(intent);
                 } catch (Exception e){
-                    System.out.println("---"+e);
+                    System.out.println(e);
                 }
             }
         }).start();
     }
-
+    private void toast(String input){
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(LoginActivity.this,input,Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }

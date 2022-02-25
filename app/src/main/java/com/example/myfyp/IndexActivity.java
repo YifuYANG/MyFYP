@@ -32,17 +32,22 @@ import java.util.Map;
 public class IndexActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
+    private String value;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
         dbHelper = new DBHelper(this);
         Button id = (Button) findViewById(R.id.idofdevice);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            value = extras.getString("key");
+        }
         id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //overtake();
-                uploaddata(10,106.52,220.3,102.3,24.1);
+                overtake();
+                //uploaddata(10,106.52,220.3,102.3,24.1);
             }
         });
 
@@ -109,9 +114,14 @@ public class IndexActivity extends AppCompatActivity {
                     } else {
                             //login then upload
                             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-                            startActivity(intent);
+
+                        if(value!=null && value.equals("loginpassed")){
                             Map<String,String> token=gettoken();
                             ifuploadsucess(token,uploadedData);
+                        } else{
+                            intent.putExtra("key", "needlogintoauthedtouploaddata");
+                            startActivity(intent);
+                        }
                     }
                 } catch (Exception e){
                     System.out.println(e);
