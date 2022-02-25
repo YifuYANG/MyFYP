@@ -6,12 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.myfyp.IndexActivity;
 import com.example.myfyp.vo.License;
 
 
 public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context) {
-        super(context,"local.db",null,1);
+        super(context,"local_2.db",null,1);
     }
 
     @Override
@@ -34,10 +35,14 @@ public class DBHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    public Cursor getdata(){
-        SQLiteDatabase DB = this.getWritableDatabase();
-        Cursor cursor = DB.rawQuery("Select * from license",null);
-        return cursor;
+    public int getsize(){
+        int i=0;
+        Cursor cursor = getReadableDatabase().rawQuery("SELECT COUNT(*) FROM license",null);
+        if(cursor.getCount()>0){
+            cursor.moveToFirst();
+            i=cursor.getInt(0);
+        }
+        return i;
     }
 
     public License getdatabydevice(String deviceId) {

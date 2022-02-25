@@ -32,20 +32,17 @@ import java.util.Map;
 public class IndexActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
-    private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
-        mAuth=FirebaseAuth.getInstance();
-        //mAuth.signOut();
         dbHelper = new DBHelper(this);
         Button id = (Button) findViewById(R.id.idofdevice);
         id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overtake();
-                //uploaddata(10,106.52,220.3,102.3,24.1);
+                //overtake();
+                uploaddata(10,106.52,220.3,102.3,24.1);
             }
         });
 
@@ -97,20 +94,24 @@ public class IndexActivity extends AppCompatActivity {
                     if(ifuselicensecomparison){
                         if(licenseComparison()){
                             Map<String,String> token=gettoken();
-                            Boolean data=ifuploadsucess(token,uploadedData);
-                            System.out.println(data);
+                            if(token!=null){
+                                Boolean isdataupload=ifuploadsucess(token,uploadedData);
+                                System.out.println(isdataupload);
+                            } else {
+                                System.out.println("you need to at least login once to access database");
+                                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                                startActivity(intent);
+                            }
                         } else {
                             //authentication failed
                             System.out.println("unable to authenticate user");
                         }
                     } else {
-                        if(mAuth.getCurrentUser()==null){
+                            //login then upload
                             Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
                             startActivity(intent);
-                        } else {
                             Map<String,String> token=gettoken();
                             ifuploadsucess(token,uploadedData);
-                        }
                     }
                 } catch (Exception e){
                     System.out.println(e);
@@ -132,7 +133,11 @@ public class IndexActivity extends AppCompatActivity {
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         License license=dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
-        return restTemplate.postForObject("http://10.0.2.2:8081/authentication/pass",new LoginformToAccessUploadDistanceServer(license.getDeviceId(),license.getPassword()),Map.class);
+        if(license!=null){
+            return restTemplate.postForObject("http://10.0.2.2:8081/authentication/pass",new LoginformToAccessUploadDistanceServer(license.getDeviceId(),license.getPassword()),Map.class);
+        } else {
+            return null;
+        }
     }
 
     private Boolean ifuploadsucess(Map<String,String> token,UploadedData uploadedData){
@@ -163,7 +168,9 @@ public class IndexActivity extends AppCompatActivity {
                 Databank databank=new Databank(dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID)).getDriverlicense(),dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID)).getDeviceId());
                 return restTemplate.postForObject("http://10.0.2.2:8082/finddriver", databank, Boolean.class);
             } catch (Exception e){
-                System.out.println(e);
+                System.out.println("you need to at least login once to access database"+e);
+                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                startActivity(intent);
                 return false;
             }
         }
