@@ -27,6 +27,10 @@
             android:name=".LoginActivity"
             android:exported="false"/>
         <activity
+            android:name=".UploadDistanceToServer"
+            android:exported="false"/>
+
+        <activity
             android:name=".IndexActivity"
             android:exported="true">
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0dp"
+    tools:context=".LoginActivity">
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="200dp"
+        android:layout_below="@+id/image_view"
+        android:text="Exchanging Information"
+        android:textSize="50dp" />
+
+<!--    <Button-->
+<!--        android:id="@+id/gobacktoindex"-->
+<!--        android:layout_width="300dp"-->
+<!--        android:layout_centerInParent="true"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Go back To Index"-->
+<!--        android:textAllCaps="false"-->
+<!--        android:layout_below="@id/info"-->
+<!--        android:backgroundTint="@android:color/holo_blue_dark"-->
+<!--        android:textSize="25dp"-->
+<!--        android:layout_marginTop="50dp"/>-->
+
+</RelativeLayout>
