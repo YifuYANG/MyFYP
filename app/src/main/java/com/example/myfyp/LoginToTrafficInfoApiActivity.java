@@ -84,7 +84,7 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
     }
 
     @SuppressLint("AllowAllHostnameVerifier")
-    public void SSLConnection(Button button) throws Exception {
+    private void SSLConnection(Button button) throws Exception {
             URL url = new URL("https://10.0.2.2:8083/traffic");
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setHostnameVerifier(new AllowAllHostnameVerifier());
@@ -105,13 +105,19 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
                         if(conn.getResponseCode()==202){
                             toast("User approved, Connection established");
                             button.setEnabled(true);
-                        } else {
-                            toast("Error, Invalid certificate");
+                        }
+                    } catch (Exception e){
+                        try {
+                            if(conn.getResponseCode()!=202) {
+                                toast("Error, Server does not response");
+                                Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
+                                startActivity(intent);
+                            }
+                        } catch (IOException ioException) {
+                            toast("Error, Server does not response");
                             Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
                             startActivity(intent);
                         }
-                    } catch (Exception e){
-                        System.out.println(e);
                     }
                 }
             }).start();
