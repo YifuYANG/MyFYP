@@ -62,26 +62,29 @@ import javax.net.ssl.X509TrustManager;
 
 public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
 
-    Button login;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logintotrafficinfo);
-        login=(Button) findViewById(R.id.login);
-        login.setOnClickListener(new View.OnClickListener() {
+        Button goback = (Button) findViewById(R.id.gobacktoindex);
+        goback.setEnabled(false);
+        try {
+            SSLConnection(goback);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        goback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    SSLConnection();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
+                startActivity(intent);
             }
         });
     }
 
     @SuppressLint("AllowAllHostnameVerifier")
-    public void SSLConnection() throws Exception {
+    public void SSLConnection(Button button) throws Exception {
             URL url = new URL("https://10.0.2.2:8083/traffic");
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setHostnameVerifier(new AllowAllHostnameVerifier());
@@ -101,8 +104,11 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
                         System.out.println("status code : "+conn.getResponseCode());
                         if(conn.getResponseCode()==202){
                             toast("User approved, Connection established");
+                            button.setEnabled(true);
                         } else {
                             toast("Error, Invalid certificate");
+                            Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
+                            startActivity(intent);
                         }
                     } catch (Exception e){
                         System.out.println(e);
