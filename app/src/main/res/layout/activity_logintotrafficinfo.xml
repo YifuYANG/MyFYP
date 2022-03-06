@@ -12,23 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp" />
 
-    <EditText
-        android:id="@+id/username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:layout_below="@+id/image_view"
-        android:hint="Username"
-        android:textSize="40dp" />
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/username"
-        android:layout_margin="30dp"
-        android:hint="Password"
-        android:textSize="40dp" />
 
     <Button
         android:id="@+id/login"
@@ -37,7 +21,7 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:textAllCaps="false"
-        android:layout_below="@id/password"
+
         android:backgroundTint="@android:color/holo_blue_dark"
         android:textSize="25dp"
         android:layout_marginTop="40dp"/>
