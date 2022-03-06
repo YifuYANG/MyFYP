@@ -21,7 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import java.util.Map;
-public class UploadDistanceToServer extends AppCompatActivity {
+public class UploadDistanceToServerActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
     private String value;

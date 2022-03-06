@@ -27,7 +27,7 @@
             android:name=".LoginActivity"
             android:exported="false"/>
         <activity
-            android:name=".UploadDistanceToServer"
+            android:name=".UploadDistanceToServerActivity"
             android:exported="false"/>
 
         <activity
