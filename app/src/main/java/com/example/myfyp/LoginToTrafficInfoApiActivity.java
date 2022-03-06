@@ -1,5 +1,6 @@
 package com.example.myfyp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,14 +11,16 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.myfyp.entity.UploadedData;
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.ClientProtocolException;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.HttpClient;
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.CloseableHttpResponse;
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.HttpGet;
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.HttpPost;
+
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.impl.client.CloseableHttpClient;
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.impl.client.HttpClients;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -48,6 +51,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.ManagerFactoryParameters;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
@@ -82,12 +86,29 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
     private final static String MY_URL = "https://10.0.2.2:8083/traffic";
     private void logintoserver() throws FileNotFoundException {
     }
+    @SuppressLint("AllowAllHostnameVerifier")
     private void test() throws Exception {
 
+        //load truststore certificate --> server certificate
+        KeyStore trustStore = KeyStore.getInstance("PKCS12");
+        trustStore.load(getAssets().open("server.p12"), "961008".toCharArray());
+        System.out.println("===============================================");
+        System.out.println("Loaded server certificates: " + trustStore.size());
+        System.out.println("===============================================");
+        TrustManagerFactory trustManagerFactory_1 = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory_1.init(trustStore);
+
+
+
+        //load client certificate --> client certificate
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
         keyStore.load(getAssets().open("client.p12"),"961008".toCharArray());
-        TrustManagerFactory trustManagerFactory=TrustManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init(keyStore);
+        System.out.println("===============================================");
+        System.out.println("Loaded client certificates: " + keyStore.size());
+        System.out.println("===============================================");
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(keyStore,"961008".toCharArray());
+
         try {
             TrustManager[] trustManager = new TrustManager[]{
                     new X509TrustManager() {
@@ -109,8 +130,10 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
             };
             URL url = new URL("https://10.0.2.2:8083/traffic");
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+            conn.setHostnameVerifier(new AllowAllHostnameVerifier());
             SSLContext sslContext=SSLContext.getInstance("TLS");
-            sslContext.init(null, trustManager, new SecureRandom());
+            sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory_1.getTrustManagers(), null);
+            //sslContext.init(null, trustManager, new SecureRandom());
 
             new Thread(new Runnable() {
                 @Override
@@ -123,16 +146,13 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
                         conn.setDoInput(true);
                         conn.connect();
                         System.out.println(conn.getInputStream());
-//                        Socket socket=sslContext.getSocketFactory().createSocket("10.0.2.2",8083);
-//                        socket.setKeepAlive(true);
-//                        System.out.println(socket.getInputStream().read());
                     } catch (Exception e){
-                        System.out.println("this is my fucking exception-->"+e);
+                        System.out.println("this is my fucking exception-------->"+e);
                     }
                 }
             }).start();
         } catch (Exception e){
-            System.out.println("this is my second fking e-------->"+e);
+            System.out.println("this is my second fucking exception-------->"+e);
         }
     }
     private void toast(String input){
