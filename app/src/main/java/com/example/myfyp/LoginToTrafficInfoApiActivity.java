@@ -88,8 +88,28 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
             URL url = new URL("https://10.0.2.2:8083/traffic");
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
             conn.setHostnameVerifier(new AllowAllHostnameVerifier());
+        final TrustManager[] trustAllCerts = new TrustManager[]{
+
+                new X509TrustManager() {
+
+                    @Override
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+                    }
+
+                    @Override
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+                    }
+
+                    @Override
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new java.security.cert.X509Certificate[]{};
+                    }
+                }
+        };
             SSLContext sslContext=SSLContext.getInstance("TLS");
-            sslContext.init(LoadClientCertificate().getKeyManagers(), LoadServerCertificate().getTrustManagers(), null);
+            //present two type of SSL authentication certificates 1. keystore : self sign certificate 2. sslopen : certificate chain
+            //sslContext.init(LoadClientCertificate().getKeyManagers(), LoadServerCertificate().getTrustManagers(), null);
+            sslContext.init(LoadClientCertificate().getKeyManagers(), trustAllCerts, null);
             toast("Authenticating, please wait");
             new Thread(new Runnable() {
                 @Override
@@ -132,14 +152,13 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
         System.out.println("===============================================");
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
-
         return trustManagerFactory;
     }
 
     private KeyManagerFactory LoadClientCertificate() throws Exception {
         //load client certificate --> client certificate
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
-        keyStore.load(getAssets().open("client.p12"),"961008".toCharArray());
+        keyStore.load(getAssets().open("client_1.p12"),"961008".toCharArray());
         System.out.println("===============================================");
         System.out.println("Loaded client certificates: " + keyStore.size());
         System.out.println("===============================================");
