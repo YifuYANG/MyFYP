@@ -21,16 +21,27 @@
         android:text="Exchanging Information"
         android:textSize="50dp" />
 
-<!--    <Button-->
-<!--        android:id="@+id/gobacktoindex"-->
-<!--        android:layout_width="300dp"-->
-<!--        android:layout_centerInParent="true"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Go back To Index"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:layout_below="@id/info"-->
-<!--        android:backgroundTint="@android:color/holo_blue_dark"-->
-<!--        android:textSize="25dp"-->
-<!--        android:layout_marginTop="50dp"/>-->
+    <Button
+        android:id="@+id/uploaddistance"
+        android:layout_width="850dp"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        android:text="Upload distance"
+        android:textAllCaps="false"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:layout_below="@id/info"
+        android:textSize="25dp"
+        android:layout_marginTop="40dp"/>
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="850dp"
+        android:layout_centerInParent="true"
+        android:layout_height="wrap_content"
+        android:text="Log out"
+        android:textAllCaps="false"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:layout_below="@id/uploaddistance"
+        android:textSize="25dp"
+        android:layout_marginTop="40dp"/>
 
 </RelativeLayout>

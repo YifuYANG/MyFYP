@@ -9,6 +9,9 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
+import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.myfyp.dbhelper.DBHelper;
 
@@ -33,15 +36,30 @@ public class OverTakeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uploaddistancetoserver);
+        Button upload=findViewById(R.id.uploaddistance);
+        Button logout=findViewById(R.id.logout);
         dbHelper = new DBHelper(this);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             value = extras.getString("key");
         }
-        overtake();
-        //uploaddata(10,106.52,220.3,102.3,24.1);
-        Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
-        startActivity(intent);
+
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                overtake();
+                //uploaddata(10,106.52,220.3,102.3,24.1);
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     Boolean isfirsttime;
@@ -99,6 +117,7 @@ public class OverTakeActivity extends AppCompatActivity {
                             Map<String,String> token=gettoken();
                             ifuploadsucess(token,uploadedData);
                         } else{
+
                             intent.putExtra("key", "needlogintoauthedtouploaddata");
                             startActivity(intent);
                         }
