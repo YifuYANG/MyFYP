@@ -22,7 +22,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-public class CertificateBaseAuthenticationActivity extends AppCompatActivity {
+public class AcquireTrafficActivity extends AppCompatActivity {
 
 
     @Override
@@ -131,7 +131,7 @@ public class CertificateBaseAuthenticationActivity extends AppCompatActivity {
     private void toast(String input){
         runOnUiThread(new Runnable() {
             public void run() {
-                Toast.makeText(CertificateBaseAuthenticationActivity.this,input,Toast.LENGTH_LONG).show();
+                Toast.makeText(AcquireTrafficActivity.this,input,Toast.LENGTH_LONG).show();
             }
         });
     }

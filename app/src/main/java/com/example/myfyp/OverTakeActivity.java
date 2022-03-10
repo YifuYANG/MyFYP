@@ -25,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
-public class LicenseComparisonActivity extends AppCompatActivity {
+public class OverTakeActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
     private String value;

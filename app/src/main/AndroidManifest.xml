@@ -16,7 +16,7 @@
         android:theme="@style/Theme.MyFYP"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".CertificateBaseAuthenticationActivity"
+        <activity android:name=".AcquireTrafficActivity"
             android:exported="false"/>
 
         <activity
@@ -27,12 +27,14 @@
             android:name=".LoginActivity"
             android:exported="false"/>
         <activity
-            android:name=".LicenseComparisonActivity"
+            android:name=".OverTakeActivity"
             android:exported="false"/>
 
         <activity android:name=".BiometricAuthenticationActivity"
             android:exported="false"/>
 
+        <activity android:name=".AcquirePatientInfo"
+            android:exported="false"/>
         <activity
             android:name=".IndexActivity"
             android:exported="true">

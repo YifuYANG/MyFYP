@@ -74,7 +74,6 @@ public class BiometricAuthenticationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 biometricPrompt.authenticate(promptInfo);
-
             }
         });
     }

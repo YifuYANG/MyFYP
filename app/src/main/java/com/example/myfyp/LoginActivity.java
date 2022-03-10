@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                                 dbHelper.insertUserInfo(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
                             }
                         }
-                        Intent intent = new Intent(getApplicationContext(), LicenseComparisonActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), OverTakeActivity.class);
                         if(value!=null&&value.equals("needlogintoauthedtouploaddata")){
                             intent.putExtra("key", "loginpassed");
                             value=null;

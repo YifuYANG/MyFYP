@@ -17,7 +17,7 @@ public class IndexActivity extends AppCompatActivity {
         id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), LicenseComparisonActivity.class);
+                Intent intent = new Intent(getApplicationContext(), OverTakeActivity.class);
                 startActivity(intent);
             }
         });
@@ -26,7 +26,7 @@ public class IndexActivity extends AppCompatActivity {
         acquireinfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), CertificateBaseAuthenticationActivity.class);
+                Intent intent = new Intent(getApplicationContext(), AcquireTrafficActivity.class);
                 startActivity(intent);
             }
         });
@@ -35,7 +35,7 @@ public class IndexActivity extends AppCompatActivity {
         acquirepatientinfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), BiometricAuthenticationActivity.class);
+                Intent intent = new Intent(getApplicationContext(), AcquirePatientInfo.class);
                 startActivity(intent);
             }
         });
