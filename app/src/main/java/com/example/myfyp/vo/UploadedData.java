@@ -1,4 +1,4 @@
-package com.example.myfyp.entity;
+package com.example.myfyp.vo;
 
 public class UploadedData {
 

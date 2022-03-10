@@ -1,66 +1,28 @@
 package com.example.myfyp;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.myfyp.entity.UploadedData;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.ClientProtocolException;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.CloseableHttpResponse;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.HttpGet;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.HttpPost;
 
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.impl.client.CloseableHttpClient;
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.impl.client.HttpClients;
 
-import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.Closeable;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.Socket;
 import java.net.URL;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.SecureRandom;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.Arrays;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.ManagerFactoryParameters;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
+public class CertificateBaseAuthenticationActivity extends AppCompatActivity {
 
 
     @Override
@@ -169,7 +131,7 @@ public class LoginToTrafficInfoApiActivity extends AppCompatActivity {
     private void toast(String input){
         runOnUiThread(new Runnable() {
             public void run() {
-                Toast.makeText(LoginToTrafficInfoApiActivity.this,input,Toast.LENGTH_LONG).show();
+                Toast.makeText(CertificateBaseAuthenticationActivity.this,input,Toast.LENGTH_LONG).show();
             }
         });
     }

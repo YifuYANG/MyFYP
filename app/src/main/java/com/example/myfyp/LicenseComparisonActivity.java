@@ -11,17 +11,21 @@ import android.os.Bundle;
 import android.provider.Settings;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.myfyp.dbhelper.DBHelper;
-import com.example.myfyp.entity.UploadedData;
+
 import com.example.myfyp.vo.Databank;
 import com.example.myfyp.vo.InputForm;
 import com.example.myfyp.vo.License;
 import com.example.myfyp.vo.LoginformToAccessUploadDistanceServer;
+import com.example.myfyp.vo.UploadedData;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
 import java.util.Map;
-public class UploadDistanceToServerActivity extends AppCompatActivity {
+public class LicenseComparisonActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
     private String value;
@@ -34,8 +38,8 @@ public class UploadDistanceToServerActivity extends AppCompatActivity {
         if (extras != null) {
             value = extras.getString("key");
         }
-        //overtake();
-        uploaddata(10,106.52,220.3,102.3,24.1);
+        overtake();
+        //uploaddata(10,106.52,220.3,102.3,24.1);
         Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
         startActivity(intent);
     }
@@ -67,15 +71,13 @@ public class UploadDistanceToServerActivity extends AppCompatActivity {
         };
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
-
     private void uploaddata(double speed,double currentlatitude,double currentlongitude,double targelatitude,double targelongitude){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     UploadedData uploadedData = new UploadedData(currentlatitude,currentlongitude,targelatitude,targelongitude,0);
-                    Boolean ifuselicensecomparison=ifuselicensecomparison(speed);
-                    if(ifuselicensecomparison){
+                    if(ifuselicensecomparison(speed)){
                         if(licenseComparison()){
                             Map<String,String> token=gettoken();
                             if(token!=null){
@@ -93,7 +95,6 @@ public class UploadDistanceToServerActivity extends AppCompatActivity {
                     } else {
                         //login then upload
                         Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-
                         if(value!=null && value.equals("loginpassed")){
                             Map<String,String> token=gettoken();
                             ifuploadsucess(token,uploadedData);

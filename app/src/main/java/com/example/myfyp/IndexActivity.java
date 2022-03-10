@@ -17,7 +17,7 @@ public class IndexActivity extends AppCompatActivity {
         id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), UploadDistanceToServerActivity.class);
+                Intent intent = new Intent(getApplicationContext(), LicenseComparisonActivity.class);
                 startActivity(intent);
             }
         });
@@ -26,7 +26,16 @@ public class IndexActivity extends AppCompatActivity {
         acquireinfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), LoginToTrafficInfoApiActivity.class);
+                Intent intent = new Intent(getApplicationContext(), CertificateBaseAuthenticationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button acquirepatientinfo = (Button) findViewById(R.id.acquirepatientinfo);
+        acquirepatientinfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), BiometricAuthenticationActivity.class);
                 startActivity(intent);
             }
         });

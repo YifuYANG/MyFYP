@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,7 +16,7 @@
         android:theme="@style/Theme.MyFYP"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".LoginToTrafficInfoApiActivity"
+        <activity android:name=".CertificateBaseAuthenticationActivity"
             android:exported="false"/>
 
         <activity
@@ -27,13 +27,15 @@
             android:name=".LoginActivity"
             android:exported="false"/>
         <activity
-            android:name=".UploadDistanceToServerActivity"
+            android:name=".LicenseComparisonActivity"
+            android:exported="false"/>
+
+        <activity android:name=".BiometricAuthenticationActivity"
             android:exported="false"/>
 
         <activity
             android:name=".IndexActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

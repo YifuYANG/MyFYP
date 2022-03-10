@@ -1,24 +1,19 @@
 package com.example.myfyp;
 
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.myfyp.dbhelper.DBHelper;
-import com.example.myfyp.entity.UploadedData;
-import com.example.myfyp.vo.LoginformToAccessTrafficInfoServer;
+
 import com.example.myfyp.vo.LoginformToAccessUploadDistanceServer;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.myfyp.vo.UploadedData;
 
 
 import org.springframework.http.HttpEntity;
@@ -101,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                                 dbHelper.insertUserInfo(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
                             }
                         }
-                        Intent intent = new Intent(getApplicationContext(),IndexActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), LicenseComparisonActivity.class);
                         if(value!=null&&value.equals("needlogintoauthedtouploaddata")){
                             intent.putExtra("key", "loginpassed");
                             value=null;
