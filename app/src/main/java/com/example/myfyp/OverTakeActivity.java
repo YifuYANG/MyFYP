@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.myfyp.dbhelper.DBHelper;
@@ -47,8 +48,8 @@ public class OverTakeActivity extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overtake();
-                //uploaddata(10,106.52,220.3,102.3,24.1);
+                //overtake();
+                uploaddata(10,106.52,220.3,102.3,24.1);
             }
         });
 
@@ -96,19 +97,21 @@ public class OverTakeActivity extends AppCompatActivity {
                 try {
                     UploadedData uploadedData = new UploadedData(currentlatitude,currentlongitude,targelatitude,targelongitude,0);
                     if(ifuselicensecomparison(speed)){
+                        toast("movement detected");
                         if(licenseComparison()){
+                            toast("license found and match");
                             Map<String,String> token=gettoken();
                             if(token!=null){
-                                Boolean isdataupload=ifuploadsucess(token,uploadedData);
-                                System.out.println(isdataupload);
+                                ifuploadsucess(token,uploadedData);
+                                toast("distance uploaded");
                             } else {
-                                System.out.println("you need to at least login once to access database");
+                                toast("you need to at least login once to access database");
                                 Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
                                 startActivity(intent);
                             }
                         } else {
                             //authentication failed
-                            System.out.println("unable to authenticate user");
+                            toast("unable to authenticate user");
                         }
                     } else {
                         //login then upload
@@ -116,17 +119,26 @@ public class OverTakeActivity extends AppCompatActivity {
                         if(value!=null && value.equals("loginpassed")){
                             Map<String,String> token=gettoken();
                             ifuploadsucess(token,uploadedData);
+                            toast("distance uploaded");
                         } else{
-
+                            toast("you need to login to be authed to upload data");
                             intent.putExtra("key", "needlogintoauthedtouploaddata");
                             startActivity(intent);
                         }
                     }
                 } catch (Exception e){
-                    System.out.println(e);
+                    toast(e.toString());
                 }
             }
         }).start();
+    }
+
+    private void toast(String input){
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(OverTakeActivity.this,input,Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private Boolean licenseComparison(){
@@ -174,7 +186,8 @@ public class OverTakeActivity extends AppCompatActivity {
                 //compare driver licence
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                Databank databank=new Databank(dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID)).getDriverlicense(),dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID)).getDeviceId());
+                License license=dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
+                Databank databank=new Databank(license.getDriverlicense(),license.getDeviceId());
                 return restTemplate.postForObject("http://10.0.2.2:8082/finddriver", databank, Boolean.class);
             } catch (Exception e){
                 System.out.println("you need to at least login once to access database"+e);
