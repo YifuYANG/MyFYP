@@ -101,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                             intent.putExtra("key", "loginpassed");
                             value=null;
                         }
+
                         startActivity(intent);
                     } else {
                         toast("unable to login");

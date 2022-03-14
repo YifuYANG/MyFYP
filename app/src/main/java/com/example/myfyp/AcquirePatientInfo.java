@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,8 +34,7 @@ public class AcquirePatientInfo extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), BiometricAuthenticationActivity.class);
                         startActivity(intent);
                     } else {
-                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(intent);
+                        toast("you need to login");
                     }
                 }
                 isfirsttime=false;
@@ -50,5 +50,12 @@ public class AcquirePatientInfo extends AppCompatActivity {
             }
         };
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    }
+    private void toast(String input){
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(AcquirePatientInfo.this,input,Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
