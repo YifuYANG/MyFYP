@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.myfyp.dbhelper.DBHelper;
+import com.example.myfyp.dbhelper.DBHelperForAccessUploadDistanceServer;
 
 import com.example.myfyp.vo.Databank;
 import com.example.myfyp.vo.InputForm;
@@ -27,11 +27,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.Map;
 public class OverTakeActivity extends AppCompatActivity {
 
-    private DBHelper dbHelper;
+    private DBHelperForAccessUploadDistanceServer dbHelperForAccessUploadDistanceServer;
     private String value;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +38,7 @@ public class OverTakeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_uploaddistancetoserver);
         Button upload=findViewById(R.id.uploaddistance);
         Button logout=findViewById(R.id.logout);
-        dbHelper = new DBHelper(this);
+        dbHelperForAccessUploadDistanceServer = new DBHelperForAccessUploadDistanceServer(this);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             value = extras.getString("key");
@@ -48,8 +47,8 @@ public class OverTakeActivity extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //overtake();
-                uploaddata(10,106.52,220.3,102.3,24.1);
+                overtake();
+                //uploaddata(10,106.52,220.3,102.3,24.1);
             }
         });
 
@@ -106,7 +105,7 @@ public class OverTakeActivity extends AppCompatActivity {
                                 toast("distance uploaded");
                             } else {
                                 toast("you need to at least login once to access database");
-                                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), LoginToUploadDistanceServerActivity.class);
                                 startActivity(intent);
                             }
                         } else {
@@ -115,7 +114,7 @@ public class OverTakeActivity extends AppCompatActivity {
                         }
                     } else {
                         //login then upload
-                        Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), LoginToUploadDistanceServerActivity.class);
                         if(value!=null && value.equals("loginpassed")){
                             Map<String,String> token=gettoken();
                             ifuploadsucess(token,uploadedData);
@@ -153,7 +152,7 @@ public class OverTakeActivity extends AppCompatActivity {
     private Map<String,String> gettoken(){
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        License license=dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
+        License license= dbHelperForAccessUploadDistanceServer.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
         if(license!=null){
             return restTemplate.postForObject("http://10.0.2.2:8081/authentication/pass",new LoginformToAccessUploadDistanceServer(license.getDeviceId(),license.getPassword()),Map.class);
         } else {
@@ -186,12 +185,12 @@ public class OverTakeActivity extends AppCompatActivity {
                 //compare driver licence
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                License license=dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
+                License license= dbHelperForAccessUploadDistanceServer.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
                 Databank databank=new Databank(license.getDriverlicense(),license.getDeviceId());
                 return restTemplate.postForObject("http://10.0.2.2:8082/finddriver", databank, Boolean.class);
             } catch (Exception e){
                 System.out.println("you need to at least login once to access database"+e);
-                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                Intent intent = new Intent(getApplicationContext(), LoginToUploadDistanceServerActivity.class);
                 startActivity(intent);
                 return false;
             }

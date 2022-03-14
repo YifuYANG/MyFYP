@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.myfyp.dbhelper.DBHelper;
+import com.example.myfyp.dbhelper.DBHelperForAccessUploadDistanceServer;
 
 import com.example.myfyp.vo.LoginformToAccessUploadDistanceServer;
 import com.example.myfyp.vo.UploadedData;
@@ -24,9 +24,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginToUploadDistanceServerActivity extends AppCompatActivity {
 
-    private DBHelper dbHelper;
+    private DBHelperForAccessUploadDistanceServer dbHelperForAccessUploadDistanceServer;
     private ArrayList<String> trustId;
     EditText username,password;
     Button login,register;
@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
         password=(EditText) findViewById(R.id.password);
         login=(Button) findViewById(R.id.login);
         register=(Button) findViewById(R.id.register);
-        dbHelper = new DBHelper(this);
+        dbHelperForAccessUploadDistanceServer = new DBHelperForAccessUploadDistanceServer(this);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,15 +64,15 @@ public class LoginActivity extends AppCompatActivity {
         String Email=username.getText().toString();
         String pass=password.getText().toString();
         if(Email.isEmpty()){
-            Toast.makeText(LoginActivity.this,"Email is required",Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginToUploadDistanceServerActivity.this,"Email is required",Toast.LENGTH_LONG).show();
             return;
         }
         if(pass.isEmpty()){
-            Toast.makeText(LoginActivity.this,"Password os required",Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginToUploadDistanceServerActivity.this,"Password os required",Toast.LENGTH_LONG).show();
             return;
         }
         if(pass.length()<6){
-            Toast.makeText(LoginActivity.this,"Min password length is 6",Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginToUploadDistanceServerActivity.this,"Min password length is 6",Toast.LENGTH_LONG).show();
             return;
         }
         new Thread(new Runnable() {
@@ -87,26 +87,20 @@ public class LoginActivity extends AppCompatActivity {
                         header.set("token", token);
                         HttpEntity<UploadedData> entity_2=new HttpEntity<>(null,header);
                         String driverlisence =restTemplate.postForObject("http://10.0.2.2:8081/license",entity_2,Map.class).get("license").toString();
-                        if(dbHelper.getsize()==0){
-                            dbHelper.insertUserInfo(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
+                        if(dbHelperForAccessUploadDistanceServer.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID))!=null){
+                            dbHelperForAccessUploadDistanceServer.update(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
                         } else {
-                            if(dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID))!=null){
-                                dbHelper.update(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
-                            } else {
-                                dbHelper.insertUserInfo(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
-                            }
+                            dbHelperForAccessUploadDistanceServer.insertUserInfo(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID),driverlisence,pass);
                         }
                         Intent intent = new Intent(getApplicationContext(), OverTakeActivity.class);
                         if(value!=null&&value.equals("needlogintoauthedtouploaddata")){
                             intent.putExtra("key", "loginpassed");
                             value=null;
                         }
-
                         startActivity(intent);
-                    } else {
-                        toast("unable to login");
                     }
                 } catch (Exception e){
+                    toast("unable to login");
                     System.out.println(e);
                 }
             }
@@ -115,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
     private void toast(String input){
         runOnUiThread(new Runnable() {
             public void run() {
-                Toast.makeText(LoginActivity.this,input,Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginToUploadDistanceServerActivity.this,input,Toast.LENGTH_LONG).show();
             }
         });
     }

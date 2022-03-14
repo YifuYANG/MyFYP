@@ -10,8 +10,8 @@ import com.example.myfyp.IndexActivity;
 import com.example.myfyp.vo.License;
 
 
-public class DBHelper extends SQLiteOpenHelper {
-    public DBHelper(Context context) {
+public class DBHelperForAccessUploadDistanceServer extends SQLiteOpenHelper {
+    public DBHelperForAccessUploadDistanceServer(Context context) {
         super(context,"local_2.db",null,1);
     }
 

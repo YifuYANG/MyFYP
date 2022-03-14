@@ -7,10 +7,22 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myfyp.dbhelper.DBHelperForAccessUploadDistanceServer;
+import com.example.myfyp.vo.License;
+import com.example.myfyp.vo.LoginformToAccessGetPatientInfoServer;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Map;
 
 public class AcquirePatientInfo extends AppCompatActivity {
     @Override
@@ -34,7 +46,9 @@ public class AcquirePatientInfo extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), BiometricAuthenticationActivity.class);
                         startActivity(intent);
                     } else {
-                        toast("you need to login");
+                        //login first then access info from server
+                        Intent intent = new Intent(getApplicationContext(), LoginToAccessPatientInfoServer.class);
+                        startActivity(intent);
                     }
                 }
                 isfirsttime=false;

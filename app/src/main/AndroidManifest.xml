@@ -24,7 +24,7 @@
             android:exported="false"/>
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".LoginToUploadDistanceServerActivity"
             android:exported="false"/>
         <activity
             android:name=".OverTakeActivity"
@@ -35,6 +35,10 @@
 
         <activity android:name=".AcquirePatientInfo"
             android:exported="false"/>
+
+        <activity android:name=".LoginToAccessPatientInfoServer"
+            android:exported="false"/>
+
         <activity
             android:name=".IndexActivity"
             android:exported="true">

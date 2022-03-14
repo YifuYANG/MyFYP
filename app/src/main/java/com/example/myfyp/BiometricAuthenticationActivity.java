@@ -3,6 +3,7 @@ package com.example.myfyp;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -16,11 +17,11 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
-import com.example.myfyp.dbhelper.DBHelper;
+import com.example.myfyp.dbhelper.DBHelperForAccessPatientInfo;
+import com.example.myfyp.dbhelper.DBHelperForAccessUploadDistanceServer;
 import com.example.myfyp.vo.License;
+
 import com.example.myfyp.vo.LoginformToAccessGetPatientInfoServer;
-import com.example.myfyp.vo.LoginformToAccessUploadDistanceServer;
-import com.example.myfyp.vo.UploadedData;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -32,13 +33,13 @@ import java.util.concurrent.Executor;
 
 public class BiometricAuthenticationActivity extends AppCompatActivity {
 
-    private DBHelper dbHelper;
+    private DBHelperForAccessPatientInfo dbHelperForAccessPatientInfo;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biometricauthentication);
-        dbHelper = new DBHelper(this);
+        dbHelperForAccessPatientInfo = new DBHelperForAccessPatientInfo(this);
         Button button = findViewById(R.id.fingerprint_login);
         TextView msg = findViewById(R.id.msg);
         //check if user can use finger print
@@ -73,7 +74,14 @@ public class BiometricAuthenticationActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        System.out.println(ifsucess(gettoken()));
+                        Map<String,String> token= gettoken();
+                        if(token!=null){
+                            ifsucess(token);
+                        }else {
+                            toast("you need to login at least once to access the server");
+                            Intent intent = new Intent(getApplicationContext(), LoginToAccessPatientInfoServer.class);
+                            startActivity(intent);
+                        }
                     }
                 }).start();
                 toast("Login success");
@@ -102,9 +110,9 @@ public class BiometricAuthenticationActivity extends AppCompatActivity {
     private Map<String,String> gettoken(){
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        License license=dbHelper.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
-        if(license!=null){
-            return restTemplate.postForObject("http://10.0.2.2:8084/authentication/pass",new LoginformToAccessGetPatientInfoServer(license.getDeviceId(),license.getPassword()),Map.class);
+        LoginformToAccessGetPatientInfoServer user= dbHelperForAccessPatientInfo.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
+        if(user!=null){
+            return restTemplate.postForObject("http://10.0.2.2:8084/authentication/pass",new LoginformToAccessGetPatientInfoServer(user.getDeviceid(),user.getPassword()),Map.class);
         } else {
             return null;
         }
