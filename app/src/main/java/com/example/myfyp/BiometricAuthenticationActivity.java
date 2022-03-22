@@ -4,6 +4,7 @@ package com.example.myfyp;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
@@ -27,6 +28,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Calendar;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
@@ -101,12 +103,22 @@ public class BiometricAuthenticationActivity extends AppCompatActivity {
             }
         });
         //create biometric dialog box
-        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Login")
-                .setDescription("finger print is needed to login")
-                .setNegativeButtonText("cancel")
-                .build();
+        BiometricPrompt.PromptInfo promptInfo;
 
+        if(isNight()){
+            promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("Login")
+                    .setDescription("finger print is needed to login")
+                    .setNegativeButtonText("Cancel")
+                    .build();
+        } else {
+            promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("Login")
+                    .setDescription("Face id is needed to login")
+                    .setNegativeButtonText("Cancel")
+                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
+                    .build();
+        }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,6 +134,14 @@ public class BiometricAuthenticationActivity extends AppCompatActivity {
         header.set("token", token);
         HttpEntity<Object> entity=new HttpEntity<>(header);
         return restTemplate.postForObject("http://10.0.2.2:8084/patientInfo",entity,Boolean.class);
+    }
+
+    private Boolean isNight(){
+        boolean isNight;
+        Calendar cal = Calendar.getInstance();
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        isNight = hour < 6 || hour > 18;
+        return isNight;
     }
 
     private void toast(String input){

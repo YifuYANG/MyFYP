@@ -68,13 +68,9 @@ public class LoginToAccessPatientInfoServer extends AppCompatActivity {
                     String token= restTemplate.postForObject("http://10.0.2.2:8084//authentication/pass",new LoginformToAccessUploadDistanceServer(Email,pass), Map.class).get("token").toString();
 
                     toast("First authentication passed");
-                    if(isNight()){
-                        System.out.println("---");
-                    } else {
-                        Intent intent = new Intent(getApplicationContext(),BiometricAuthenticationActivity.class);
-                        intent.putExtra("token", token);
-                        startActivity(intent);
-                    }
+                    Intent intent = new Intent(getApplicationContext(),BiometricAuthenticationActivity.class);
+                    intent.putExtra("token", token);
+                    startActivity(intent);
                 } catch (Exception e){
                     toast("unable to login");
                     System.out.println(e);
@@ -83,13 +79,6 @@ public class LoginToAccessPatientInfoServer extends AppCompatActivity {
         }).start();
     }
 
-    private Boolean isNight(){
-        boolean isNight;
-        Calendar cal = Calendar.getInstance();
-        int hour = cal.get(Calendar.HOUR_OF_DAY);
-        isNight = hour < 6 || hour > 18;
-        return isNight;
-    }
 
     private void toast(String input){
         runOnUiThread(new Runnable() {
