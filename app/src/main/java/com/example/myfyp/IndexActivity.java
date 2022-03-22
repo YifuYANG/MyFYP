@@ -35,7 +35,7 @@ public class IndexActivity extends AppCompatActivity {
         acquirepatientinfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), AcquirePatientInfo.class);
+                Intent intent = new Intent(getApplicationContext(), LoginToAccessPatientInfoServer.class);
                 startActivity(intent);
             }
         });

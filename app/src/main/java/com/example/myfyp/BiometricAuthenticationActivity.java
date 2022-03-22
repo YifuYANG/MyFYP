@@ -33,12 +33,17 @@ import java.util.concurrent.Executor;
 
 public class BiometricAuthenticationActivity extends AppCompatActivity {
 
+    private String value;
     private DBHelperForAccessPatientInfo dbHelperForAccessPatientInfo;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biometricauthentication);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            value = extras.getString("token");
+        }
         dbHelperForAccessPatientInfo = new DBHelperForAccessPatientInfo(this);
         Button button = findViewById(R.id.fingerprint_login);
         TextView msg = findViewById(R.id.msg);
@@ -74,17 +79,23 @@ public class BiometricAuthenticationActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Map<String,String> token= gettoken();
-                        if(token!=null){
-                            ifsucess(token);
-                        }else {
-                            toast("you need to login at least once to access the server");
-                            Intent intent = new Intent(getApplicationContext(), LoginToAccessPatientInfoServer.class);
-                            startActivity(intent);
+                        try {
+                            if(value!=null){
+                                if(ifsucess(value)){
+                                    toast("patient info acquired");
+                                    Intent intent = new Intent(getApplicationContext(), AcquirePatientInfo.class);
+                                    startActivity(intent);
+                                }
+                            }else {
+                                toast("you need to login to access the server");
+                                Intent intent = new Intent(getApplicationContext(), LoginToAccessPatientInfoServer.class);
+                                startActivity(intent);
+                            }
+                        } catch (Exception e){
+                            toast(e.toString());
                         }
                     }
                 }).start();
-                toast("Login success");
             }
 
             @Override
@@ -107,21 +118,11 @@ public class BiometricAuthenticationActivity extends AppCompatActivity {
         });
     }
 
-    private Map<String,String> gettoken(){
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        LoginformToAccessGetPatientInfoServer user= dbHelperForAccessPatientInfo.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
-        if(user!=null){
-            return restTemplate.postForObject("http://10.0.2.2:8084/authentication/pass",new LoginformToAccessGetPatientInfoServer(user.getDeviceid(),user.getPassword()),Map.class);
-        } else {
-            return null;
-        }
-    }
-    private Boolean ifsucess(Map<String,String> token){
+    private Boolean ifsucess(String token){
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         HttpHeaders header = new HttpHeaders();
-        header.set("token", token.get("token"));
+        header.set("token", token);
         HttpEntity<Object> entity=new HttpEntity<>(header);
         return restTemplate.postForObject("http://10.0.2.2:8084/patientInfo",entity,Boolean.class);
     }

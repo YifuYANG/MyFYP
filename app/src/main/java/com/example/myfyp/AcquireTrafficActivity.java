@@ -28,7 +28,7 @@ public class AcquireTrafficActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_logintotrafficinfo);
+        setContentView(R.layout.activity_trafficinfosystem);
         Button goback = (Button) findViewById(R.id.gobacktoindex);
         goback.setEnabled(false);
         try {
