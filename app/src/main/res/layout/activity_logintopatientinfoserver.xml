@@ -43,11 +43,11 @@
         android:layout_marginTop="40dp"/>
 
     <Button
-        android:id="@+id/register"
+        android:id="@+id/goback"
         android:layout_width="850dp"
         android:layout_centerInParent="true"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:text="Go Back To Index"
         android:textAllCaps="false"
         android:layout_below="@id/login"
         android:backgroundTint="@android:color/holo_blue_dark"

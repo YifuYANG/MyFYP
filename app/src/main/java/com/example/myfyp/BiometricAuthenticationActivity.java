@@ -17,7 +17,6 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
-import com.example.myfyp.dbhelper.DBHelperForAccessPatientInfo;
 import com.example.myfyp.dbhelper.DBHelperForAccessUploadDistanceServer;
 import com.example.myfyp.vo.License;
 
@@ -34,7 +33,6 @@ import java.util.concurrent.Executor;
 public class BiometricAuthenticationActivity extends AppCompatActivity {
 
     private String value;
-    private DBHelperForAccessPatientInfo dbHelperForAccessPatientInfo;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +42,6 @@ public class BiometricAuthenticationActivity extends AppCompatActivity {
         if (extras != null) {
             value = extras.getString("token");
         }
-        dbHelperForAccessPatientInfo = new DBHelperForAccessPatientInfo(this);
         Button button = findViewById(R.id.fingerprint_login);
         TextView msg = findViewById(R.id.msg);
         //check if user can use finger print

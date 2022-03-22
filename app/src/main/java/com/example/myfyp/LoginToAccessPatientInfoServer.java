@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myfyp.dbhelper.DBHelperForAccessPatientInfo;
+
 import com.example.myfyp.vo.LoginformToAccessUploadDistanceServer;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -19,22 +19,20 @@ import java.util.Calendar;
 import java.util.Map;
 
 public class LoginToAccessPatientInfoServer extends AppCompatActivity {
-    private DBHelperForAccessPatientInfo dbHelperForAccessPatientInfo;
     EditText username,password;
-    Button login,register;
+    Button login,goback;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_logintouploaddistanceserver);
+        setContentView(R.layout.activity_logintopatientinfoserver);
         username=(EditText)findViewById(R.id.username);
         password=(EditText) findViewById(R.id.password);
         login=(Button) findViewById(R.id.login);
-        register=(Button) findViewById(R.id.register);
-        dbHelperForAccessPatientInfo = new DBHelperForAccessPatientInfo(this);
-        register.setOnClickListener(new View.OnClickListener() {
+        goback=(Button) findViewById(R.id.goback);
+        goback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(),RegisterActivity.class);
+                Intent intent = new Intent(getApplicationContext(),IndexActivity.class);
                 startActivity(intent);
             }
         });
@@ -80,8 +78,6 @@ public class LoginToAccessPatientInfoServer extends AppCompatActivity {
                 } catch (Exception e){
                     toast("unable to login");
                     System.out.println(e);
-                    Intent intent = new Intent(getApplicationContext(),IndexActivity.class);
-                    startActivity(intent);
                 }
             }
         }).start();
