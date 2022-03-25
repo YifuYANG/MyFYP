@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".IndexActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="100dp"
+        android:text="Adaptive Authentication System"
+        android:textSize="50sp"
+        android:textColor="#FFF"
+        />
     <Button
         android:id="@+id/idofdevice"
         android:layout_width="850dp"
