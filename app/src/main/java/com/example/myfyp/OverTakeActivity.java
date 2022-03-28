@@ -32,13 +32,21 @@ public class OverTakeActivity extends AppCompatActivity {
 
     private DBHelperForAccessUploadDistanceServer dbHelperForAccessUploadDistanceServer;
     private String value;
+    private String android_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uploaddistancetoserver);
+        android_id =Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
         Button upload=findViewById(R.id.uploaddistance);
         Button logout=findViewById(R.id.logout);
         dbHelperForAccessUploadDistanceServer = new DBHelperForAccessUploadDistanceServer(this);
+        //this four lines of code represent the default car plate and password pre-install into the system which will be used to license comparison and login to back end server
+        if(dbHelperForAccessUploadDistanceServer.getdatabydevice(android_id)!=null){
+            dbHelperForAccessUploadDistanceServer.update(android_id,"","232323");
+        } else {
+            dbHelperForAccessUploadDistanceServer.insertUserInfo(android_id,"","232323");
+        }
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             value = extras.getString("key");
@@ -47,8 +55,8 @@ public class OverTakeActivity extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overtake();
-                //uploaddata(10,106.52,220.3,102.3,24.1);
+                //overtake();
+                uploaddata(10,106.52,220.3,102.3,24.1);
             }
         });
 
@@ -95,18 +103,14 @@ public class OverTakeActivity extends AppCompatActivity {
             public void run() {
                 try {
                     UploadedData uploadedData = new UploadedData(currentlatitude,currentlongitude,targelatitude,targelongitude,0);
-                    if(ifuselicensecomparison(speed)){
+                    if(speed>0){
                         toast("movement detected");
                         if(licenseComparison()){
-                            toast("license found and match");
+                            toast("license found");
                             Map<String,String> token=gettoken();
                             if(token!=null){
-                                ifuploadsucess(token,uploadedData);
-                                toast("distance uploaded");
-                            } else {
-                                toast("you need to at least login once to access database");
-                                Intent intent = new Intent(getApplicationContext(), LoginToUploadDistanceServerActivity.class);
-                                startActivity(intent);
+                                Double distance=ifuploadsucess(token,uploadedData);
+                                toast("the distance is "+distance);
                             }
                         } else {
                             //authentication failed
@@ -117,8 +121,9 @@ public class OverTakeActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), LoginToUploadDistanceServerActivity.class);
                         if(value!=null && value.equals("loginpassed")){
                             Map<String,String> token=gettoken();
-                            ifuploadsucess(token,uploadedData);
-                            toast("distance uploaded");
+                            assert token != null;
+                            Double distance=ifuploadsucess(token,uploadedData);
+                            toast("distance is "+distance);
                         } else{
                             toast("you need to login to be authed to upload data");
                             intent.putExtra("key", "needlogintoauthedtouploaddata");
@@ -141,18 +146,18 @@ public class OverTakeActivity extends AppCompatActivity {
     }
 
     private Boolean licenseComparison(){
-        try {
-            return new LicenseCompare().execute().get();
-        } catch (Exception e){
-            System.out.println(e);
-            return false;
-        }
+        License license= dbHelperForAccessUploadDistanceServer.getdatabydevice(android_id);
+        return license.getDeviceId().equals(android_id);
     }
 
+    /*
+    because we want qualified users to use our services only,
+    so we will use the car plate with a random password which are pre install into our system as user credentials to login to our servers
+    */
     private Map<String,String> gettoken(){
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        License license= dbHelperForAccessUploadDistanceServer.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
+        License license= dbHelperForAccessUploadDistanceServer.getdatabydevice(android_id);
         if(license!=null){
             return restTemplate.postForObject("http://10.0.2.2:8081/authentication/pass",new LoginformToAccessUploadDistanceServer(license.getDeviceId(),license.getPassword()),Map.class);
         } else {
@@ -160,21 +165,29 @@ public class OverTakeActivity extends AppCompatActivity {
         }
     }
 
-    private Boolean ifuploadsucess(Map<String,String> token,UploadedData uploadedData){
+    private Double ifuploadsucess(Map<String,String> token,UploadedData uploadedData){
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         HttpHeaders header = new HttpHeaders();
         header.set("token", token.get("token"));
         HttpEntity<UploadedData> entity_2=new HttpEntity<>(uploadedData,header);
-        return restTemplate.postForObject("http://10.0.2.2:8081/uploaddata",entity_2,Boolean.class);
+        return restTemplate.postForObject("http://10.0.2.2:8081/uploaddata",entity_2,Double.class);
     }
 
+    /*
+    asking authentication remotely is not the best way in this situation since we are trying to minimize the time to perform authentication
+    */
     private Boolean ifuselicensecomparison(double speed){
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
         return restTemplate.postForObject("http://10.0.2.2:8081/authentication",new InputForm(speed),Boolean.class);
     }
 
+    /*
+    similar compare car plate with driver id remotely is also not the best way in this situation since we are trying to minimize the time to perform authentication,
+    also, we decided to only check if the local database holds the same number as the car plate (we use device id to represent car plate in this simulation)
+    this authentication should only be aimed at the ambulance and not the driver because the distance info is not sensitive
+    */
     private class LicenseCompare extends AsyncTask<String,String,Boolean> {
         @Override
         protected Boolean doInBackground(String... strings) {
@@ -185,7 +198,7 @@ public class OverTakeActivity extends AppCompatActivity {
                 //compare driver licence
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                License license= dbHelperForAccessUploadDistanceServer.getdatabydevice(Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID));
+                License license= dbHelperForAccessUploadDistanceServer.getdatabydevice(android_id);
                 Databank databank=new Databank(license.getDriverlicense(),license.getDeviceId());
                 return restTemplate.postForObject("http://10.0.2.2:8082/finddriver", databank, Boolean.class);
             } catch (Exception e){
