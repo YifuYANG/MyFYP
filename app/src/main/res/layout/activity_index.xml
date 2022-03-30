@@ -10,11 +10,46 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="150dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="20dp"
         android:text="Adaptive Authentication System"
         android:textSize="50sp"
         android:textColor="#FFF"
         />
+
+    <TextView
+        android:id="@+id/speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="500dp"
+        android:layout_marginTop="150dp"
+        android:textSize="50sp"
+        android:textColor="#FFF"
+        android:text="Current Speed:"
+        />
+
+    <TextView
+        android:id="@+id/msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="870dp"
+        android:layout_marginTop="150dp"
+        android:textSize="50sp"
+        android:textColor="#FFF"
+        android:text="50"
+        />
+
+    <Button
+        android:id="@+id/map"
+        android:layout_width="850dp"
+
+        android:layout_height="wrap_content"
+        android:text="Map"
+        android:textAllCaps="false"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textSize="25dp"
+        android:layout_marginStart="87dp"
+        android:layout_marginTop="20dp"/>
+
     <Button
         android:id="@+id/idofdevice"
         android:layout_width="850dp"

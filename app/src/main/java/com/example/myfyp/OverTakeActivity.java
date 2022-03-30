@@ -41,8 +41,13 @@ public class OverTakeActivity extends AppCompatActivity {
         Button upload=findViewById(R.id.uploaddistance);
         Button logout=findViewById(R.id.logout);
         dbHelperForAccessUploadDistanceServer = new DBHelperForAccessUploadDistanceServer(this);
-        //this four lines of code represent the default car plate and password pre-install into the system which will be used to license comparison and login to back end server
-        if(dbHelperForAccessUploadDistanceServer.getdatabydevice(android_id)!=null){
+        /**
+          this four lines of code represent the default car plate and password pre-install
+          into the system which will be used to license comparison and login to back end server
+         */
+        if(dbHelperForAccessUploadDistanceServer.getsize()==0){
+            dbHelperForAccessUploadDistanceServer.insertUserInfo(android_id,"","232323");
+        } else if(dbHelperForAccessUploadDistanceServer.getdatabydevice(android_id)!=null){
             dbHelperForAccessUploadDistanceServer.update(android_id,"","232323");
         } else {
             dbHelperForAccessUploadDistanceServer.insertUserInfo(android_id,"","232323");
@@ -55,8 +60,8 @@ public class OverTakeActivity extends AppCompatActivity {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //overtake();
-                uploaddata(10,106.52,220.3,102.3,24.1);
+                overtake();
+                //uploaddata(10,106.52,220.3,102.3,24.1);
             }
         });
 
@@ -174,8 +179,8 @@ public class OverTakeActivity extends AppCompatActivity {
         return restTemplate.postForObject("http://10.0.2.2:8081/uploaddata",entity_2,Double.class);
     }
 
-    /*
-    asking authentication remotely is not the best way in this situation since we are trying to minimize the time to perform authentication
+    /**
+     * asking authentication remotely is not the best way in this situation since we are trying to minimize the time to perform authentication
     */
     private Boolean ifuselicensecomparison(double speed){
         RestTemplate restTemplate = new RestTemplate();
@@ -183,10 +188,10 @@ public class OverTakeActivity extends AppCompatActivity {
         return restTemplate.postForObject("http://10.0.2.2:8081/authentication",new InputForm(speed),Boolean.class);
     }
 
-    /*
-    similar compare car plate with driver id remotely is also not the best way in this situation since we are trying to minimize the time to perform authentication,
-    also, we decided to only check if the local database holds the same number as the car plate (we use device id to represent car plate in this simulation)
-    this authentication should only be aimed at the ambulance and not the driver because the distance info is not sensitive
+    /**
+     * similar compare car plate with driver id remotely is also not the best way in this situation since we are trying to minimize the time to perform authentication,
+     * also, we decided to only check if the local database holds the same number as the car plate (we use device id to represent car plate in this simulation)
+     * this authentication should only be aimed at the ambulance and not the driver because the distance info is not sensitive
     */
     private class LicenseCompare extends AsyncTask<String,String,Boolean> {
         @Override
