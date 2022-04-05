@@ -1,8 +1,10 @@
 package com.example.myfyp;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,6 +16,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.example.myfyp.dbhelper.DBHelperForAccessUploadDistanceServer;
 
 import com.example.myfyp.vo.Databank;
@@ -78,6 +83,7 @@ public class OverTakeActivity extends AppCompatActivity {
     Boolean isfirsttime;
     @SuppressLint("MissingPermission")
     public void overtake() {
+        askpermission();
         isfirsttime=true;
         // Acquire a reference to the system Location Manager
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -217,6 +223,14 @@ public class OverTakeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean match) {
             super.onPostExecute(match);
+        }
+    }
+
+    private void askpermission(){
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        if(permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            // ask permissions here using below code
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 10001);
         }
     }
 }

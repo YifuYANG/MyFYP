@@ -19,7 +19,7 @@
         android:layout_margin="30dp"
         android:layout_below="@+id/image_view"
         android:hint="Username"
-        android:textSize="40dp" />
+        android:textSize="25dp" />
 
     <EditText
         android:id="@+id/password"
@@ -28,11 +28,11 @@
         android:layout_below="@+id/username"
         android:layout_margin="30dp"
         android:hint="Password"
-        android:textSize="40dp" />
+        android:textSize="25dp" />
 
     <Button
         android:id="@+id/login"
-        android:layout_width="850dp"
+        android:layout_width="150dp"
         android:layout_centerInParent="true"
         android:layout_height="wrap_content"
         android:text="Login"
@@ -44,10 +44,10 @@
 
     <Button
         android:id="@+id/goback"
-        android:layout_width="850dp"
+        android:layout_width="150dp"
         android:layout_centerInParent="true"
         android:layout_height="wrap_content"
-        android:text="Go Back To Index"
+        android:text="Index"
         android:textAllCaps="false"
         android:layout_below="@id/login"
         android:backgroundTint="@android:color/holo_blue_dark"
