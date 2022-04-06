@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -65,6 +66,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         acquirepatientinfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                toast("Two-Factor authentication is required");
                 Intent intent = new Intent(getApplicationContext(), LoginToAccessPatientInfoServer.class);
                 startActivity(intent);
             }
@@ -125,5 +127,13 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             // ask permissions here using below code
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 10001);
         }
+    }
+
+    private void toast(String input){
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(IndexActivity.this,input,Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

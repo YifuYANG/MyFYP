@@ -117,11 +117,11 @@ public class OverTakeActivity extends AppCompatActivity {
                     if(speed>0){
                         toast("movement detected");
                         if(licenseComparison()){
-                            toast("license found");
+                            toast("license "+android_id+" found and match");
                             Map<String,String> token=gettoken();
                             if(token!=null){
                                 Double distance=ifuploadsucess(token,uploadedData);
-                                toast("the distance is "+distance);
+                                toast("the example distance is "+distance);
                             }
                         } else {
                             //authentication failed
@@ -134,7 +134,7 @@ public class OverTakeActivity extends AppCompatActivity {
                             Map<String,String> token=gettoken();
                             assert token != null;
                             Double distance=ifuploadsucess(token,uploadedData);
-                            toast("distance is "+distance);
+                            toast("example distance is "+distance);
                         } else{
                             toast("you need to login to be authed to upload data");
                             intent.putExtra("key", "needlogintoauthedtouploaddata");
