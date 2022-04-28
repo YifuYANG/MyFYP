@@ -92,7 +92,7 @@ public class OverTakeActivity extends AppCompatActivity {
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 if(isfirsttime){
-                    uploaddata(location.getSpeed(), 0, 0, 0, 0);
+                    decisionmaking(location.getSpeed(), 0, 0, 0, 0);
                 }
                 isfirsttime=false;
             }
@@ -108,7 +108,7 @@ public class OverTakeActivity extends AppCompatActivity {
         };
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
-    private void uploaddata(double speed,double currentlatitude,double currentlongitude,double targelatitude,double targelongitude){
+    private void decisionmaking(double speed,double currentlatitude,double currentlongitude,double targelatitude,double targelongitude){
         new Thread(new Runnable() {
             @Override
             public void run() {
